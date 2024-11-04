@@ -15,47 +15,61 @@
         <button @click="updateRange">Select range</button>
     </div>
     <p>I have selected a number between {{ chosenStartNum }} and {{ chosenEndNum }}, can you guess the number? </p>
-    <input type="number">
+    <input v-model="userGuess" type="number">
+    <button @click="getGuess">Guess</button>
     
 </template>
 
 <script>
 
-    export default {
+export default {
     data() {
-            return {
-                numTo100: [],
-                startNum: 1,
-                endNum: 100,
-                chosenStartNum: 1,
-                chosenEndNum: 100,
-                randNum: Math.floor(Math.random() * (this.endNum - this.startNum + 1)) + this.startNum
-            };
-        },
+        return {
+            numTo100: [],
+            startNum: 1,
+            endNum: 100,
+            chosenStartNum: 1,
+            chosenEndNum: 100,
+            randNum: Math.floor(Math.random() * (this.endNum - this.startNum + 1)) + this.startNum,
+            userGuess: null
+        };
+    },
     created() {
-            for (let i = 1; i <= 100; i++) {
-                this.numTo100.push(i)
-                
-            }
+        for (let i = 1; i <= 100; i++) {
+            this.numTo100.push(i)
+
+        }
     },
     methods: {
         updateRange() {
             const start = parseInt(this.startNum, 10)
             const end = parseInt(this.endNum, 10)
-            
+
             alert("start: " + this.startNum + "  end: " + this.endNum)
-            if (start >= end) { 
+            if (start >= end) {
                 alert("The beginning number cant be larger than the ending number of the renge")
             } else {
                 this.chosenStartNum = start
                 this.chosenEndNum = end
                 this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum
-                
-                alert("Randon number: " + this.randNum)
+
+                alert("Random number: " + this.randNum)
             }
 
-            
+
+        },
+
+        getGuess() {
+            const theGuess = parseInt(this.userGuess)
+            if (theGuess === this.randNum) {
+                alert("Correct")
+            } else if (theGuess > this.randNum) {
+                alert("You are too high")
             }
-        } 
+            else {
+                alert("You are low")
+            }
+        }
     }
+}
 </script>
