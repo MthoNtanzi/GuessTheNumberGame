@@ -1,15 +1,16 @@
 <template>
     <h1>Hello There :)</h1>
     <h2>Please select a range</h2>
+    <p>You have {{ guessCount }} guesses remaining</p>
     <div>
         <select v-model="startNum" name="" id="">
             <option v-for="num in numTo100" :key="num">
-                {{num}}
+                {{ num }}
             </option>
         </select>
         <select v-model="endNum" name="" id="">
             <option v-for="num in numTo100" :key="num">
-                {{num}}
+                {{ num }}
             </option>
         </select>
         <button @click="updateRange">Select range</button>
@@ -17,11 +18,14 @@
     <p>I have selected a number between {{ chosenStartNum }} and {{ chosenEndNum }}, can you guess the number? </p>
     <input v-model="userGuess" type="number">
     <button @click="getGuess">Guess</button>
-    
+    <p v-if="hasUserGuessed">
+        <span v-if="isCorrect">Yes!! You win</span>
+        <span v-else-if="isHigh">Your guess is too high</span>
+        <span v-else-if="isLow">Your guess is too low</span>
+    </p>
 </template>
 
 <script>
-
 export default {
     data() {
         return {
@@ -30,44 +34,56 @@ export default {
             endNum: 100,
             chosenStartNum: 1,
             chosenEndNum: 100,
-            randNum: Math.floor(Math.random() * (this.endNum - this.startNum + 1)) + this.startNum,
-            userGuess: null
+            randNum: null, // Set to null initially
+            userGuess: null,
+            hasUserGuessed: false,
+            isCorrect: false,
+            isHigh: false,
+            isLow: false
         };
     },
     created() {
         for (let i = 1; i <= 100; i++) {
-            this.numTo100.push(i)
-
+            this.numTo100.push(i);
         }
     },
     methods: {
         updateRange() {
-            const start = parseInt(this.startNum, 10)
-            const end = parseInt(this.endNum, 10)
+            const start = parseInt(this.startNum, 10);
+            const end = parseInt(this.endNum, 10);
 
-            alert("start: " + this.startNum + "  end: " + this.endNum)
+            alert("Start: " + this.startNum + "  End: " + this.endNum);
             if (start >= end) {
-                alert("The beginning number cant be larger than the ending number of the renge")
+                alert("The beginning number can't be larger than the ending number of the range");
             } else {
-                this.chosenStartNum = start
-                this.chosenEndNum = end
-                this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum
-
-                alert("Random number: " + this.randNum)
+                this.chosenStartNum = start;
+                this.chosenEndNum = end;
+                this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum;
+                alert("Random number: " + this.randNum);
             }
-
-
         },
 
         getGuess() {
-            const theGuess = parseInt(this.userGuess)
-            if (theGuess === this.randNum) {
-                alert("Correct")
-            } else if (theGuess > this.randNum) {
-                alert("You are too high")
+            if (this.randNum === null) {
+                alert("Please select a range first.");
+                return;
             }
-            else {
-                alert("You are low")
+
+            this.hasUserGuessed = true;
+            const theGuess = parseInt(this.userGuess);
+
+            if (theGuess === this.randNum) {
+                this.isCorrect = true;
+                this.isHigh = false;
+                this.isLow = false;
+            } else if (theGuess > this.randNum) {
+                this.isCorrect = false;
+                this.isHigh = true;
+                this.isLow = false;
+            } else {
+                this.isCorrect = false;
+                this.isHigh = false;
+                this.isLow = true;
             }
         }
     }
