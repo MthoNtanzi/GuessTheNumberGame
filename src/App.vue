@@ -23,7 +23,7 @@
     </div>
     <p>I have selected a number between {{ chosenStartNum }} and {{ chosenEndNum }}, can you guess the number? </p>
     <input v-model="userGuess" type="number">
-    <button @click="getGuess">Guess</button>
+    <button @click="getGuess" @keyup.enter="submit">Guess</button>
     <p v-if="hasUserGuessed">
         <span v-if="isCorrect">Yes!! You win</span>
         <span v-else-if="isHigh">Your guess is too high</span>
@@ -71,7 +71,7 @@ export default {
 
         getGuess() {
             if (this.randNum === null) {
-                alert("Please select a range first.");
+                alert("Please select a difficulty first.");
                 return;
             }
 
