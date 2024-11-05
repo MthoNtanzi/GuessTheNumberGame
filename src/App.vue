@@ -10,17 +10,16 @@
     </select>
     <p>You have {{ guessCount }} guesses remaining</p>
     <div>
-        <select v-model="startNum" name="" id="">
+        <select v-model="startNum" @change="updateRange">
             <option v-for="num in numTo100" :key="num">
                 {{ num }}
             </option>
         </select>
-        <select v-model="endNum" name="" id="">
+        <select v-model="endNum" @change="updateRange">
             <option v-for="num in numTo100" :key="num">
                 {{ num }}
             </option>
         </select>
-        <button @click="updateRange">Select range</button>
     </div>
     <p>I have selected a number between {{ chosenStartNum }} and {{ chosenEndNum }}, can you guess the number? </p>
     <input v-model="userGuess" type="number">
@@ -61,14 +60,12 @@ export default {
             const start = parseInt(this.startNum, 10);
             const end = parseInt(this.endNum, 10);
 
-            alert("Start: " + this.startNum + "  End: " + this.endNum);
             if (start >= end) {
                 alert("The beginning number can't be larger than the ending number of the range");
             } else {
                 this.chosenStartNum = start;
-                this.chosenEndNum = end;
                 this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum;
-                alert("Random number: " + this.randNum);
+                this.chosenEndNum = end;
             }
         },
 
@@ -108,7 +105,7 @@ export default {
 
         chooseDifficulty() {
             if (this.selectedDifficulty === "easy") {
-                this.guessCount = 10;
+                this.guessCount = 8;
             } else if (this.selectedDifficulty === "normal") {
                 this.guessCount = 5;
             } else if (this.selectedDifficulty === "hard") {
@@ -124,7 +121,7 @@ export default {
             this.isHigh = false;
             this.isLow = false;
             this.userGuess = null;
-            this.guessCount = this.selectedDifficulty === "easy" ? 11 : this.selectedDifficulty === "normal" ? 6 : 4;
+            this.guessCount = this.selectedDifficulty === "easy" ? 8 : this.selectedDifficulty === "normal" ? 5 : 3;
             this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum;
         },
     }
