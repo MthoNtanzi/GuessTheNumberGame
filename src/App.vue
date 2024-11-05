@@ -1,6 +1,13 @@
 <template>
     <h1>Hello There :)</h1>
     <h2>Please select a range</h2>
+    <br/>
+    <p>Select difficulty</p>
+    <select v-model="selectedDifficulty" @change="chooseDifficulty">
+        <option v-for="choice in difficulty" :key="choice" :value="choice">
+                {{ choice }}
+            </option>
+    </select>
     <p>You have {{ guessCount }} guesses remaining</p>
     <div>
         <select v-model="startNum" name="" id="">
@@ -29,6 +36,7 @@
 export default {
     data() {
         return {
+            difficulty: ["easy", "normal", "hard"],
             numTo100: [],
             startNum: 1,
             endNum: 100,
@@ -39,7 +47,8 @@ export default {
             hasUserGuessed: false,
             isCorrect: false,
             isHigh: false,
-            isLow: false
+            isLow: false,
+            guessCount: 5
         };
     },
     created() {
@@ -69,23 +78,55 @@ export default {
                 return;
             }
 
+            if (this.guessCount === 0 && !this.isCorrect) {
+                alert("You lose! The correct number was " + this.randNum);
+                this.resetGame();
+            }
+            
             this.hasUserGuessed = true;
             const theGuess = parseInt(this.userGuess);
+            this.guessCount--
 
             if (theGuess === this.randNum) {
                 this.isCorrect = true;
                 this.isHigh = false;
                 this.isLow = false;
+                alert("Yes!! You win!");
+                return;
             } else if (theGuess > this.randNum) {
                 this.isCorrect = false;
                 this.isHigh = true;
                 this.isLow = false;
+                return
             } else {
                 this.isCorrect = false;
                 this.isHigh = false;
                 this.isLow = true;
+                return
+            } 
+        },
+
+        chooseDifficulty() {
+            if (this.selectedDifficulty === "easy") {
+                this.guessCount = 10;
+            } else if (this.selectedDifficulty === "normal") {
+                this.guessCount = 5;
+            } else if (this.selectedDifficulty === "hard") {
+                this.guessCount = 3;
             }
-        }
+            this.resetGame();
+            alert("Difficulty changed to " + this.selectedDifficulty + " with " + this.guessCount + " guesses.");
+        },
+
+        resetGame() {
+            this.hasUserGuessed = false;
+            this.isCorrect = false;
+            this.isHigh = false;
+            this.isLow = false;
+            this.userGuess = null;
+            this.guessCount = this.selectedDifficulty === "easy" ? 11 : this.selectedDifficulty === "normal" ? 6 : 4;
+            this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum;
+        },
     }
 }
 </script>
