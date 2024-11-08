@@ -22,8 +22,8 @@
         </select>
     </div>
     <p>I have selected a number between {{ chosenStartNum }} and {{ chosenEndNum }}, can you guess the number? </p>
-    <input v-model="userGuess" type="number">
-    <button @click="getGuess" @keyup.enter="submit">Guess</button>
+    <input v-model="userGuess" type="number" @keyup.enter="getGuess">
+    <button @click="getGuess">Guess</button>
     <p v-if="hasUserGuessed">
         <span v-if="isCorrect">Yes!! You win</span>
         <span v-else-if="isHigh">Your guess is too high</span>
