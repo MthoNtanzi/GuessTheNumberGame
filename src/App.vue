@@ -7,20 +7,20 @@
         <select v-model="selectedDifficulty" @change="chooseDifficulty">
             <option value="" disabled>Select a difficulty</option>
             <option v-for="choice in difficulty" :key="choice" :value="choice">
-                    {{ choice }}
-                </option>
+                {{ choice }}
+            </option>
         </select>
         <p>You have {{ guessCount }} guesses remaining</p>
     
         <div>
             <select v-model="startNum" @change="updateRange">
-                <option value="" disabled>Choose start range</option>
+                <option value="" disabled>Update range start</option>
                 <option v-for="num in numTo100" :key="num" :value="num">
                     {{ num }}
                 </option>
             </select>
             <select v-model="endNum" @change="updateRange">
-                <option value="" disabled>Choose end range</option>
+                <option value="" disabled>Update range end</option>
                 <option v-for="num in numTo100" :key="num" :value="num">
                     {{ num }}
                 </option>
@@ -48,7 +48,7 @@ export default {
             endNum: "",
             chosenStartNum: 1,
             chosenEndNum: 100,
-            randNum: null, // Set to null initially
+            randNum: null,
             userGuess: null,
             hasUserGuessed: false,
             isCorrect: false,
@@ -69,14 +69,13 @@ export default {
 
             if (this.startNum && this.endNum) {
                 if (end - start < 10) {
-                    alert("The range should be at least 10 numbers apart");
-                }
-                else if (start >= end) {
-                    alert("The beginning number can't be larger than the ending number of the range");
+                    alert("The range should be at least 10 numbers apart.");
+                } else if (start >= end) {
+                    alert("The beginning number can't be larger than the ending number of the range.");
                 } else {
                     this.chosenStartNum = start;
-                    this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum;
                     this.chosenEndNum = end;
+                    this.randNum = Math.floor(Math.random() * (end - start + 1)) + start;
                     alert("New range selected. Random number has been generated.");
                 }
             }
@@ -91,29 +90,36 @@ export default {
             if (this.guessCount === 0 && !this.isCorrect) {
                 alert("You lose! The correct number was " + this.randNum);
                 this.resetGame();
+                return;
             }
-            
+
             this.hasUserGuessed = true;
             const theGuess = parseInt(this.userGuess);
-            this.guessCount--
+            this.guessCount--;
 
             if (theGuess === this.randNum) {
                 this.isCorrect = true;
                 this.isHigh = false;
                 this.isLow = false;
                 alert("Yes!! You win!");
+                this.resetGame()
                 return;
             } else if (theGuess > this.randNum) {
                 this.isCorrect = false;
                 this.isHigh = true;
                 this.isLow = false;
-                return
             } else {
                 this.isCorrect = false;
                 this.isHigh = false;
                 this.isLow = true;
-                return
-            } 
+            }
+
+            // Clear userGuess if guesses run out
+            if (this.guessCount === 0 && !this.isCorrect) {
+                this.userGuess = null;
+                alert("You are out off Guesses. The correct number was " + this.randNum)
+                this.resetGame()
+            }
         },
 
         chooseDifficulty() {
@@ -134,7 +140,18 @@ export default {
             this.isHigh = false;
             this.isLow = false;
             this.userGuess = null;
-            this.guessCount = this.selectedDifficulty === "easy" ? 8 : this.selectedDifficulty === "normal" ? 5 : 3;
+            this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum;
+
+             // Set the guess count based on the selected difficulty
+            if (this.selectedDifficulty === "easy") {
+                this.guessCount = 8;
+            } else if (this.selectedDifficulty === "normal") {
+                this.guessCount = 5;
+            } else if (this.selectedDifficulty === "hard") {
+                this.guessCount = 3;
+            }
+
+            // Generate a new random number within the chosen range
             this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum;
         },
     }
@@ -149,19 +166,19 @@ export default {
         text-align: center;
     }
 
-    .gameBoard{
+    .gameBoard {
         padding: 2.5em;
-        max-width:30em;
+        max-width: 30em;
         background: rgba(59, 186, 236, 0.7);
         margin: auto;
         border-radius: 1em;
         box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;    
     }
 
-    input, select{
+    input, select {
         min-width: 100%;
-        inset: none;
         border-radius: 0.25em;
         border: 1px solid rgba(59, 236, 168, 0.7);
+        margin-bottom: 0.5em;
     }
 </style>
