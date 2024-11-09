@@ -1,10 +1,11 @@
 <template>
     <h1>Hello There :)</h1>
-    <h2>Please select a range</h2>
+    <h2>Please select a difficulty</h2>
     <br/>
     <div class="gameBoard">
         <p>Select difficulty</p>
         <select v-model="selectedDifficulty" @change="chooseDifficulty">
+            <option value="" disabled>Select a difficulty</option>
             <option v-for="choice in difficulty" :key="choice" :value="choice">
                     {{ choice }}
                 </option>
@@ -13,12 +14,14 @@
     
         <div>
             <select v-model="startNum" @change="updateRange">
-                <option v-for="num in numTo100" :key="num">
+                <option value="" disabled>Choose start range</option>
+                <option v-for="num in numTo100" :key="num" :value="num">
                     {{ num }}
                 </option>
             </select>
             <select v-model="endNum" @change="updateRange">
-                <option v-for="num in numTo100" :key="num">
+                <option value="" disabled>Choose end range</option>
+                <option v-for="num in numTo100" :key="num" :value="num">
                     {{ num }}
                 </option>
             </select>
@@ -39,9 +42,10 @@ export default {
     data() {
         return {
             difficulty: ["easy", "normal", "hard"],
+            selectedDifficulty: "",
             numTo100: [],
-            startNum: 1,
-            endNum: 100,
+            startNum: "",
+            endNum: "",
             chosenStartNum: 1,
             chosenEndNum: 100,
             randNum: null, // Set to null initially
@@ -63,12 +67,18 @@ export default {
             const start = parseInt(this.startNum, 10);
             const end = parseInt(this.endNum, 10);
 
-            if (start >= end) {
-                alert("The beginning number can't be larger than the ending number of the range");
-            } else {
-                this.chosenStartNum = start;
-                this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum;
-                this.chosenEndNum = end;
+            if (this.startNum && this.endNum) {
+                if (end - start < 10) {
+                    alert("The range should be at least 10 numbers apart");
+                }
+                else if (start >= end) {
+                    alert("The beginning number can't be larger than the ending number of the range");
+                } else {
+                    this.chosenStartNum = start;
+                    this.randNum = Math.floor(Math.random() * (this.chosenEndNum - this.chosenStartNum + 1)) + this.chosenStartNum;
+                    this.chosenEndNum = end;
+                    alert("New range selected. Random number has been generated.");
+                }
             }
         },
 
@@ -136,6 +146,7 @@ export default {
         margin: 0;
         padding: 0;
         background: rgba(59, 236, 168, 0.7);
+        text-align: center;
     }
 
     .gameBoard{
@@ -144,6 +155,13 @@ export default {
         background: rgba(59, 186, 236, 0.7);
         margin: auto;
         border-radius: 1em;
-        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;    
+    }
+
+    input, select{
+        min-width: 100%;
+        inset: none;
+        border-radius: 0.25em;
+        border: 1px solid rgba(59, 236, 168, 0.7);
     }
 </style>
