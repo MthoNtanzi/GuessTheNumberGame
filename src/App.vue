@@ -2,33 +2,36 @@
     <h1>Hello There :)</h1>
     <h2>Please select a range</h2>
     <br/>
-    <p>Select difficulty</p>
-    <select v-model="selectedDifficulty" @change="chooseDifficulty">
-        <option v-for="choice in difficulty" :key="choice" :value="choice">
-                {{ choice }}
-            </option>
-    </select>
-    <p>You have {{ guessCount }} guesses remaining</p>
-    <div>
-        <select v-model="startNum" @change="updateRange">
-            <option v-for="num in numTo100" :key="num">
-                {{ num }}
-            </option>
+    <div class="gameBoard">
+        <p>Select difficulty</p>
+        <select v-model="selectedDifficulty" @change="chooseDifficulty">
+            <option v-for="choice in difficulty" :key="choice" :value="choice">
+                    {{ choice }}
+                </option>
         </select>
-        <select v-model="endNum" @change="updateRange">
-            <option v-for="num in numTo100" :key="num">
-                {{ num }}
-            </option>
-        </select>
+        <p>You have {{ guessCount }} guesses remaining</p>
+    
+        <div>
+            <select v-model="startNum" @change="updateRange">
+                <option v-for="num in numTo100" :key="num">
+                    {{ num }}
+                </option>
+            </select>
+            <select v-model="endNum" @change="updateRange">
+                <option v-for="num in numTo100" :key="num">
+                    {{ num }}
+                </option>
+            </select>
+        </div>
+        <p>I have selected a number between {{ chosenStartNum }} and {{ chosenEndNum }}, can you guess the number? </p>
+        <input v-model="userGuess" type="number" @keyup.enter="getGuess">
+        <button @click="getGuess">Guess</button>
+        <p v-if="hasUserGuessed">
+            <span v-if="isCorrect">Yes!! You win</span>
+            <span v-else-if="isHigh">Your guess is too high</span>
+            <span v-else-if="isLow">Your guess is too low</span>
+        </p>
     </div>
-    <p>I have selected a number between {{ chosenStartNum }} and {{ chosenEndNum }}, can you guess the number? </p>
-    <input v-model="userGuess" type="number" @keyup.enter="getGuess">
-    <button @click="getGuess">Guess</button>
-    <p v-if="hasUserGuessed">
-        <span v-if="isCorrect">Yes!! You win</span>
-        <span v-else-if="isHigh">Your guess is too high</span>
-        <span v-else-if="isLow">Your guess is too low</span>
-    </p>
 </template>
 
 <script>
@@ -127,3 +130,20 @@ export default {
     }
 }
 </script>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: rgba(59, 236, 168, 0.7);
+    }
+
+    .gameBoard{
+        padding: 2.5em;
+        max-width:30em;
+        background: rgba(59, 186, 236, 0.7);
+        margin: auto;
+        border-radius: 1em;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+    }
+</style>
